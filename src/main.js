@@ -24,6 +24,7 @@ function handleErrorMessage(message = 'Something went wrong') {
 }
 
 async function loadButtonHandler() {
+  hideLoadButton();
   let query = sessionStorage.getItem('search-text');
 
   showLoader();
@@ -40,8 +41,6 @@ async function loadButtonHandler() {
       );
     }
     createGallery(res.hits);
-
-    showLoadButton();
     let card = gallery.firstElementChild.getBoundingClientRect();
     window.scrollBy({
       top: card.height * 2,
@@ -58,6 +57,8 @@ async function loadButtonHandler() {
     );
     hideLoadButton();
     return;
+  } else {
+    showLoadButton();
   }
 }
 
