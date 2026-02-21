@@ -1,3 +1,17 @@
+.is-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
 .loader {
   width: 48px;
   height: 12px;
@@ -38,4 +52,27 @@
   100% {
     transform: translate(-50%, -5px);
   }
+}
+.cover-button {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.load-more {
+  font-weight: 500;
+  border: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  background: #4e75ff;
+  color: #fff;
+  margin: 0 auto;
+}
+.load-more:hover {
+  background: #6c8cff;
 }
