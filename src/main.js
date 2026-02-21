@@ -25,7 +25,7 @@ function handleErrorMessage(message = 'Something went wrong') {
 
 async function loadButtonHandler() {
   let query = sessionStorage.getItem('search-text');
-  hideLoadButton();
+
   showLoader();
   current_page += 1;
   if (!query) {
@@ -56,6 +56,7 @@ async function loadButtonHandler() {
     handleErrorMessage(
       `We're sorry, but you've reached the end of search results.`
     );
+    hideLoadButton();
     return;
   }
 }
@@ -67,6 +68,8 @@ let total_pages = 0;
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
+  hideLoadButton();
+  hideLoader();
   const query = form.elements['search-text'].value.toLowerCase().trim();
   if (!query) return;
   sessionStorage.setItem('search-text', query);
