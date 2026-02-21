@@ -31,7 +31,7 @@ export function createGallery(images) {
         comments = '0',
         downloads = '0',
       }) => {
-        if (webformatURL.trim() != '' || largeImageURL.trim() != '') {
+        if (webformatURL.trim() != '' && largeImageURL.trim() != '') {
           return `<li class="gallery-item">
   <a class="gallery-link" href="${largeImageURL}">
     <img
@@ -39,7 +39,7 @@ export function createGallery(images) {
       src="${webformatURL}"
       data-source="${largeImageURL}"
       alt="${tags}"
-      width="360" height="200";
+      width="360" height="200"
     />
     <ul class="gallery-additional-info">
     <li class="additional-info-text"><span class="additional-info-label">Likes</span>

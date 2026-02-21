@@ -22,42 +22,46 @@ function handleErrorMessage(message = 'Something went wrong') {
     backgroundColor: '#ef4040',
   });
 }
-function loadButtonHandler() {
+
+async function loadButtonHandler() {
   let query = sessionStorage.getItem('search-text');
+  hideLoadButton();
   showLoader();
   current_page += 1;
-  if (!query) return;
-  getImagesByQuery(query, current_page)
-    .then(res => {
-      if (res.hits.length === 0) {
-        return Promise.reject(
-          new Error(
-            'Sorry, there are no images matching your search query. Please try again!'
-          )
-        );
-      }
-      createGallery(res.hits);
-    })
-    .catch(error => {
-      handleErrorMessage(error.message);
-    })
-    .finally(() => {
-      hideLoader();
-    });
+  if (!query) {
+    hideLoader();
+    return;
+  }
+  try {
+    let res = await getImagesByQuery(query, current_page);
+    if (res.hits.length === 0) {
+      Promise.reject(
+        new Error(
+          'Sorry, there are no images matching your search query. Please try again!'
+        )
+      );
+    }
+    createGallery(res.hits);
+  } catch (error) {
+    handleErrorMessage(error.message);
+  } finally {
+    hideLoader();
+  }
   if (current_page >= total_pages) {
     handleErrorMessage(
       `We're sorry, but you've reached the end of search results.`
     );
-    hideLoadButton();
     return;
   }
+  showLoadButton();
 }
+
 const form = document.querySelector('.form');
 const more_button = document.querySelector('.load-more');
 let current_page = 1;
 let total_pages = 0;
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
   const query = form.elements['search-text'].value.toLowerCase().trim();
   if (!query) return;
@@ -65,29 +69,29 @@ form.addEventListener('submit', event => {
   clearGallery();
   showLoader();
   current_page = 1;
-  getImagesByQuery(query, current_page)
-    .then(res => {
-      if (res.hits.length === 0) {
-        return Promise.reject(
-          new Error(
-            'Sorry, there are no images matching your search query. Please try again!'
-          )
-        );
-      }
-      total_pages = Math.ceil(res.totalHits / 15);
-      createGallery(res.hits);
-      if (total_pages == current_page) {
-        handleErrorMessage(
-          `We're sorry, but you've reached the end of search results.`
-        );
-        hideLoadButton();
-      } else {
-        showLoadButton();
-      }
-    })
-    .catch(error => {
-      handleErrorMessage(error.message);
-    })
-    .finally(() => hideLoader());
+  try {
+    let res = await getImagesByQuery(query, current_page);
+    if (res.hits.length === 0) {
+      return Promise.reject(
+        new Error(
+          'Sorry, there are no images matching your search query. Please try again!'
+        )
+      );
+    }
+    total_pages = Math.ceil(res.totalHits / 15);
+    createGallery(res.hits);
+    if (total_pages == current_page) {
+      handleErrorMessage(
+        `We're sorry, but you've reached the end of search results.`
+      );
+      hideLoadButton();
+    } else {
+      showLoadButton();
+    }
+  } catch (error) {
+    handleErrorMessage(error.message);
+  } finally {
+    hideLoader();
+  }
 });
 more_button.addEventListener('click', loadButtonHandler);
