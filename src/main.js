@@ -35,13 +35,18 @@ async function loadButtonHandler() {
   try {
     let res = await getImagesByQuery(query, current_page);
     if (res.hits.length === 0) {
-      Promise.reject(
-        new Error(
-          'Sorry, there are no images matching your search query. Please try again!'
-        )
+      throw new Error(
+        'Sorry, there are no images matching your search query. Please try again!'
       );
     }
     createGallery(res.hits);
+
+    showLoadButton();
+    let card = gallery.firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: card.height * 2,
+      behavior: 'smooth',
+    });
   } catch (error) {
     handleErrorMessage(error.message);
   } finally {
@@ -53,7 +58,6 @@ async function loadButtonHandler() {
     );
     return;
   }
-  showLoadButton();
 }
 
 const form = document.querySelector('.form');
@@ -72,10 +76,8 @@ form.addEventListener('submit', async event => {
   try {
     let res = await getImagesByQuery(query, current_page);
     if (res.hits.length === 0) {
-      return Promise.reject(
-        new Error(
-          'Sorry, there are no images matching your search query. Please try again!'
-        )
+      throw new Error(
+        'Sorry, there are no images matching your search query. Please try again!'
       );
     }
     total_pages = Math.ceil(res.totalHits / 15);
